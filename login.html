@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Student Login - HO JAGAR COMPETITIVE</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: Arial, sans-serif;
+    }
+
+    body {
+      background: #f4f7f5;
+      color: #17221c;
+    }
+
+    .header {
+      background: linear-gradient(135deg, #087443, #0b9b58);
+      color: white;
+      padding: 22px;
+      text-align: center;
+    }
+
+    .container {
+      max-width: 500px;
+      margin: auto;
+      padding: 20px;
+    }
+
+    .box {
+      background: white;
+      padding: 25px;
+      border-radius: 18px;
+      box-shadow: 0 4px 15px rgba(0,0,0,.08);
+    }
+
+    h2 {
+      color: #087443;
+      margin-bottom: 20px;
+      text-align: center;
+    }
+
+    label {
+      display: block;
+      margin-top: 12px;
+      margin-bottom: 6px;
+      font-weight: bold;
+    }
+
+    input {
+      width: 100%;
+      padding: 13px;
+      border: 1px solid #ddd;
+      border-radius: 10px;
+      font-size: 15px;
+    }
+
+    button {
+      width: 100%;
+      padding: 14px;
+      margin-top: 18px;
+      border: none;
+      border-radius: 10px;
+      background: #087443;
+      color: white;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .register {
+      background: #555;
+    }
+
+    .message {
+      display: none;
+      margin-top: 15px;
+      padding: 12px;
+      border-radius: 10px;
+      text-align: center;
+      background: #ffe8e8;
+      color: #c1121f;
+    }
+  </style>
+</head>
+
+<body>
+
+<header class="header">
+  <h1>HO JAGAR COMPETITIVE</h1>
+  <p>Student Login</p>
+</header>
+
+<main class="container">
+
+<section class="box">
+
+  <h2>🎓 Student Login</h2>
+
+  <label>Mobile Number</label>
+
+  <input
+    id="mobile"
+    type="tel"
+    maxlength="10"
+    placeholder="10 digit mobile number">
+
+  <label>Password</label>
+
+  <input
+    id="password"
+    type="password"
+    placeholder="Password">
+
+  <button onclick="login()">
+    Login
+  </button>
+
+  <button
+    class="register"
+    onclick="window.location.href='register.html'">
+    Create New Account
+  </button>
+
+  <div id="message" class="message"></div>
+
+</section>
+
+</main>
+
+<script>
+
+function login() {
+
+  const mobile =
+    document.getElementById("mobile").value.trim();
+
+  const password =
+    document.getElementById("password").value;
+
+
+  if (!mobile || !password) {
+
+    showMessage("Mobile Number और Password डालें।");
+    return;
+  }
+
+
+  const students =
+    JSON.parse(
+      localStorage.getItem("hoJagarStudents")
+    ) || [];
+
+
+  const student =
+    students.find(
+      user =>
+        user.mobile === mobile &&
+        user.password === password
+    );
+
+
+  if (!student) {
+
+    showMessage(
+      "Mobile Number या Password गलत है।"
+    );
+
+    return;
+  }
+
+
+  localStorage.setItem(
+    "loggedInStudent",
+    JSON.stringify(student)
+  );
+
+
+  window.location.href =
+    "dashboard.html";
+}
+
+
+function showMessage(text) {
+
+  const message =
+    document.getElementById("message");
+
+  message.innerText = text;
+  message.style.display = "block";
+}
+
+</script>
+
+</body>
+</html>
