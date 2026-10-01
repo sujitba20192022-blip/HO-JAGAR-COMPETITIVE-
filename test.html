@@ -151,7 +151,39 @@
 
   <main class="container">
 
-    <section class="question-box">
+<section class="question-box">
+
+  <div class="question-number" id="questionNumber">
+    Question 1
+  </div>
+
+  <div class="question" id="question">
+    Question loading...
+  </div>
+
+  <div id="options"></div>
+
+  <div class="buttons">
+
+    <button
+      class="previous"
+      onclick="previousQuestion()">
+      Previous
+    </button>
+
+    <button onclick="nextQuestion()">
+      Next
+    </button>
+
+    <button
+      class="submit"
+      onclick="submitTest()">
+      Submit
+    </button>
+
+  </div>
+
+</section>
 
       <div class="question-number" id="questionNumber">
         Question 1 of 100
