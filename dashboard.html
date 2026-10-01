@@ -81,4 +81,155 @@
       display: grid;
       grid-template-columns: repeat(2, 1fr);
       gap: 15px;
-   
+       }
+
+    .test {
+      background: white;
+      padding: 20px;
+      border-radius: 16px;
+      box-shadow: 0 4px 15px rgba(0,0,0,.06);
+    }
+
+    .test h3 {
+      color: #087443;
+      margin-bottom: 8px;
+    }
+
+    .test p {
+      margin: 5px 0;
+      color: #555;
+    }
+
+    button {
+      width: 100%;
+      border: none;
+      padding: 12px;
+      margin-top: 12px;
+      border-radius: 10px;
+      background: #087443;
+      color: white;
+      font-size: 15px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .paid {
+      background: #e63946;
+    }
+
+    .nav {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 8px;
+      margin-top: 25px;
+    }
+
+    .nav button {
+      margin: 0;
+      background: white;
+      color: #087443;
+      border: 1px solid #ddd;
+    }
+
+    @media (max-width: 700px) {
+      .stats {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .tests {
+        grid-template-columns: 1fr;
+      }
+
+      .nav {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+<header class="top">
+  <h1>HO JAGAR COMPETITIVE</h1>
+  <p>Student Dashboard</p>
+</header>
+
+<main class="container">
+
+<section class="profile">
+  <h2>👋 Welcome, Student</h2>
+  <p>आपके सभी tests और results यहाँ दिखाई देंगे।</p>
+</section>
+
+<section class="stats">
+  <div class="stat"><strong>0</strong>Tests</div>
+  <div class="stat"><strong>0</strong>Completed</div>
+  <div class="stat"><strong>0</strong>Score</div>
+  <div class="stat"><strong>--</strong>Rank</div>
+</section>
+
+<h2 class="section-title">📚 Available Tests</h2>
+
+<section class="tests">
+
+  <div class="test">
+    <h3>Jharkhand GK Test</h3>
+    <p>📝 Questions: 100</p>
+    <p>⏱️ Duration: 60 Minutes</p>
+    <p>💰 Free Test</p>
+    <button onclick="startTest('Jharkhand GK Test')">
+      Start Test
+    </button>
+  </div>
+
+  <div class="test">
+    <h3>HO Competitive Test</h3>
+    <p>📝 Questions: 100</p>
+    <p>⏱️ Duration: 60 Minutes</p>
+    <p>💰 Paid Test</p>
+    <button class="paid" onclick="buyTest('HO Competitive Test')">
+      Buy Test
+    </button>
+  </div>
+
+</section>
+
+<h2 class="section-title">📊 My Activity</h2>
+
+<section class="nav">
+
+  <button onclick="openPage('tests')">Tests</button>
+
+  <button onclick="openPage('mytests')">My Tests</button>
+
+  <!-- ⭐ RESULTS BUTTON -->
+  <button onclick="window.location.href='result.html'">
+    Results
+  </button>
+
+  <button onclick="openPage('payments')">Payments</button>
+
+  <button onclick="openPage('profile')">Profile</button>
+
+</section>
+
+</main>
+
+<script>
+
+function startTest(testName) {
+  alert(testName + " शुरू हो रहा है।");
+}
+
+function buyTest(testName) {
+  alert(testName + " के लिए payment page खुलेगा।");
+}
+
+function openPage(page) {
+  alert(page + " section जल्द ही connect किया जाएगा।");
+}
+
+</script>
+
+</body>
+</html>
