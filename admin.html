@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Admin Dashboard - HO JAGAR COMPETITIVE</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: Arial, sans-serif;
+    }
+
+    body {
+      background: #f4f7f5;
+      color: #17221c;
+    }
+
+    .header {
+      background: linear-gradient(135deg, #087443, #0b9b58);
+      color: white;
+      padding: 22px;
+      text-align: center;
+    }
+
+    .header h1 {
+      font-size: 24px;
+    }
+
+    .header p {
+      margin-top: 6px;
+    }
+
+    .container {
+      max-width: 1000px;
+      margin: auto;
+      padding: 20px;
+    }
+
+    .welcome {
+      background: white;
+      padding: 22px;
+      border-radius: 18px;
+      margin-bottom: 20px;
+      box-shadow: 0 4px 15px rgba(0,0,0,.07);
+    }
+
+    .welcome h2 {
+      color: #087443;
+      margin-bottom: 7px;
+    }
+
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 14px;
+      margin-bottom: 22px;
+    }
+
+    .stat {
+      background: white;
+      padding: 20px;
+      text-align: center;
+      border-radius: 15px;
+      box-shadow: 0 4px 15px rgba(0,0,0,.06);
+    }
+
+    .stat strong {
+      display: block;
+      color: #087443;
+      font-size: 28px;
+      margin-bottom: 5px;
+    }
+
+    .section-title {
+      margin-bottom: 12px;
+    }
+
+    .menu {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 15px;
+    }
+
+    .menu-card {
+      background: white;
+      padding: 20px;
+      border-radius: 16px;
+      box-shadow: 0 4px 15px rgba(0,0,0,.06);
+    }
+
+    .menu-card h3 {
+      color: #087443;
+      margin-bottom: 7px;
+    }
+
+    .menu-card p {
+      color: #666;
+      margin-bottom: 12px;
+    }
+
+    button {
+      width: 100%;
+      padding: 12px;
+      border: none;
+      border-radius: 10px;
+      background: #087443;
+      color: white;
+      font-size: 15px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .logout {
+      background: #e63946;
+      margin-top: 20px;
+    }
+
+    @media (max-width: 650px) {
+      .stats,
+      .menu {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+<header class="header">
+  <h1>HO JAGAR COMPETITIVE</h1>
+  <p>Admin Dashboard</p>
+</header>
+
+<main class="container">
+
+  <section class="welcome">
+    <h2>👋 Welcome Admin</h2>
+    <p>यहाँ से पूरे app का management किया जा सकता है।</p>
+  </section>
+
+  <section class="stats">
+
+    <div class="stat">
+      <strong id="testCount">0</strong>
+      Tests
+    </div>
+
+    <div class="stat">
+      <strong id="questionCount">0</strong>
+      Questions
+    </div>
+
+    <div class="stat">
+      <strong>0</strong>
+      Students
+    </div>
+
+  </section>
+
+  <h2 class="section-title">⚙️ Management</h2>
+
+  <section class="menu">
+
+    <div class="menu-card">
+      <h3>📝 Create Test</h3>
+      <p>नया test बनाएँ और settings तैयार करें।</p>
+      <button onclick="openPage('create-test.html')">
+        Create Test
+      </button>
+    </div>
+
+    <div class="menu-card">
+      <h3>📋 Manage Tests</h3>
+      <p>Tests को edit, publish और delete करें।</p>
+      <button onclick="openPage('manage-tests.html')">
+        Manage Tests
+      </button>
+    </div>
+
+    <div class="menu-card">
+      <h3>➕ Add Question</h3>
+      <p>अपने questions और सही answers जोड़ें।</p>
+      <button onclick="openPage('admin-questions.html')">
+        Add Question
+      </button>
+    </div>
+
+    <div class="menu-card">
+      <h3>📚 Manage Questions</h3>
+      <p>Questions को देखें, edit और delete करें।</p>
+      <button onclick="openPage('manage-questions.html')">
+        Manage Questions
+      </button>
+    </div>
+
+    <div class="menu-card">
+      <h3>👨‍🎓 Students</h3>
+      <p>Student accounts और information manage करें।</p>
+      <button onclick="studentsPage()">
+        Students
+      </button>
+    </div>
+
+    <div class="menu-card">
+      <h3>📊 Results</h3>
+      <p>Students के test results देखें।</p>
+      <button onclick="resultsPage()">
+        Results
+      </button>
+    </div>
+
+  </section>
+
+  <button class="logout" onclick="logout()">
+    Admin Logout
+  </button>
+
+</main>
+
+<script>
+
+function loadStats() {
+
+  const tests =
+    JSON.parse(localStorage.getItem("hoJagarTests")) || [];
+
+  const questions =
+    JSON.parse(localStorage.getItem("hoJagarQuestions")) || [];
+
+  document.getElementById("testCount").innerText =
+    tests.length;
+
+  document.getElementById("questionCount").innerText =
+    questions.length;
+}
+
+
+function openPage(page) {
+  window.location.href = page;
+}
+
+
+function studentsPage() {
+  alert("Student Management अगले step में बनाया जाएगा।");
+}
+
+
+function resultsPage() {
+  alert("Result Management अगले step में बनाया जाएगा।");
+}
+
+
+function logout() {
+
+  if (confirm("क्या आप Admin Logout करना चाहते हैं?")) {
+    window.location.href = "index.html";
+  }
+}
+
+
+loadStats();
+
+</script>
+
+</body>
+</html>
