@@ -241,6 +241,8 @@ i<!DOCTYPE html>
 
 let currentQuestion = 1;
 let questions = [];
+const selectedTestName =
+  localStorage.getItem("selectedTestName") || "";
 let answers = {};
 let timeLeft = 60 * 60;
 
@@ -252,7 +254,17 @@ function loadQuestions() {
       localStorage.getItem("hoJagarQuestions")
     ) || [];
 
+const tests = JSON.parse(localStorage.getItem("hoJagarTests")) || [];
 
+const selectedTest = tests.find(
+  test => test.name === selectedTestName
+);
+
+if (!selectedTest) {
+  alert("Test नहीं मिला।");
+  window.location.href = "dashboard.html";
+  return;
+}
   if (questions.length === 0) {
 
     document.getElementById("question").innerText =
