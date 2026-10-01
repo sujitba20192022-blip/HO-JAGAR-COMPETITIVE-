@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Online Test - HO JAGAR COMPETITIVE</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: Arial, sans-serif;
+    }
+
+    body {
+      background: #f4f7f5;
+      color: #17221c;
+    }
+
+    .header {
+      background: linear-gradient(135deg, #087443, #0b9b58);
+      color: white;
+      padding: 18px;
+      text-align: center;
+    }
+
+    .timer {
+      margin-top: 8px;
+      font-size: 20px;
+      font-weight: bold;
+      color: #ffe600;
+    }
+
+    .container {
+      max-width: 900px;
+      margin: auto;
+      padding: 18px;
+    }
+
+    .question-box {
+      background: white;
+      padding: 22px;
+      border-radius: 18px;
+      box-shadow: 0 4px 15px rgba(0,0,0,.08);
+    }
+
+    .question-number {
+      color: #087443;
+      font-weight: bold;
+      margin-bottom: 12px;
+    }
+
+    .question {
+      font-size: 20px;
+      font-weight: bold;
+      margin-bottom: 18px;
+    }
+
+    .option {
+      display: block;
+      background: #f4f7f5;
+      border: 1px solid #ddd;
+      padding: 14px;
+      margin: 10px 0;
+      border-radius: 10px;
+      cursor: pointer;
+    }
+
+    .option:hover {
+      background: #e8f5ed;
+    }
+
+    .option input {
+      margin-right: 10px;
+    }
+
+    .buttons {
+      display: flex;
+      gap: 10px;
+      margin-top: 20px;
+    }
+
+    button {
+      flex: 1;
+      border: none;
+      padding: 13px;
+      border-radius: 10px;
+      background: #087443;
+      color: white;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .previous {
+      background: #777;
+    }
+
+    .submit {
+      background: #e63946;
+    }
+
+    .navigation {
+      background: white;
+      padding: 18px;
+      margin-top: 18px;
+      border-radius: 18px;
+    }
+
+    .numbers {
+      display: grid;
+      grid-template-columns: repeat(10, 1fr);
+      gap: 7px;
+      margin-top: 12px;
+    }
+
+    .number {
+      padding: 9px 4px;
+      background: #eee;
+      color: #333;
+      border-radius: 7px;
+      text-align: center;
+      cursor: pointer;
+    }
+
+    .active {
+      background: #087443;
+      color: white;
+    }
+
+    @media (max-width: 600px) {
+      .numbers {
+        grid-template-columns: repeat(5, 1fr);
+      }
+
+      .question {
+        font-size: 18px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <header class="header">
+    <h1>HO JAGAR COMPETITIVE</h1>
+    <p>Online Test</p>
+    <div class="timer" id="timer">60:00</div>
+  </header>
+
+  <main class="container">
+
+    <section class="question-box">
+
+      <div class="question-number" id="questionNumber">
+        Question 1 of 100
+      </div>
+
+      <div class="question" id="question">
+        भारत की राजधानी क्या है?
+      </div>
+
+      <label class="option">
+        <input type="radio" name="answer" value="A">
+        A. मुंबई
+      </label>
+
+      <label class="option">
+        <input type="radio" name="answer" value="B">
+        B. नई दिल्ली
+      </label>
+
+      <label class="option">
+        <input type="radio" name="answer" value="C">
+        C. कोलकाता
+      </label>
+
+      <label class="option">
+        <input type="radio" name="answer" value="D">
+        D. चेन्नई
+      </label>
+
+      <div class="buttons">
+        <button class="previous" onclick="previousQuestion()">
+          Previous
+        </button>
+
+        <button onclick="nextQuestion()">
+          Next
+        </button>
+
+        <button class="submit" onclick="submitTest()">
+          Submit
+        </button>
+      </div>
+
+    </section>
+
+    <section class="navigation">
+
+      <h3>Question Navigation</h3>
+
+      <div class="numbers" id="numbers"></div>
+
+    </section>
+
+  </main>
+
+  <script>
+
+    let currentQuestion = 1;
+    let totalQuestions = 100;
+    let timeLeft = 60 * 60;
+
+    function createQuestionNumbers() {
+
+      const box = document.getElementById("numbers");
+
+      for (let i = 1; i <= totalQuestions; i++) {
+
+        const number = document.createElement("div");
+
+        number.className = "number";
+
+        if (i === 1) {
+          number.classList.add("active");
+        }
+
+        number.innerText = i;
+
+        number.onclick = function() {
+          currentQuestion = i;
+          updateQuestion();
+        };
+
+        box.appendChild(number);
+      }
+    }
+
+    function updateQuestion() {
+
+      document.getElementById("questionNumber").innerText =
+        "Question " + currentQuestion + " of " + totalQuestions;
+
+      const numbers = document.querySelectorAll(".number");
+
+      numbers.forEach((n, index) => {
+        n.classList.remove("active");
+
+        if (index + 1 === currentQuestion) {
+          n.classList.add("active");
+        }
+      });
+    }
+
+    function nextQuestion() {
+
+      if (currentQuestion < totalQuestions) {
+        currentQuestion++;
+        updateQuestion();
+      }
+    }
+
+    function previousQuestion() {
+
+      if (currentQuestion > 1) {
+        currentQuestion--;
+        updateQuestion();
+      }
+    }
+
+    function submitTest() {
+
+      const confirmSubmit = confirm(
+        "क्या आप test submit करना चाहते हैं?"
+      );
+
+      if (confirmSubmit) {
+        alert("Test submitted successfully!");
+      }
+    }
+
+    function startTimer() {
+
+      const timer = document.getElementById("timer");
+
+      const interval = setInterval(function() {
+
+        const minutes = Math.floor(timeLeft / 60);
+        const seconds = timeLeft % 60;
+
+        timer.innerText =
+          String(minutes).padStart(2, "0") +
+          ":" +
+          String(seconds).padStart(2, "0");
+
+        timeLeft--;
+
+        if (timeLeft < 0) {
+
+          clearInterval(interval);
+
+          alert("Time समाप्त हो गया। Test automatically submitted.");
+        }
+
+      }, 1000);
+    }
+
+    createQuestionNumbers();
+    startTimer();
+
+  </script>
+
+</body>
+</html>
