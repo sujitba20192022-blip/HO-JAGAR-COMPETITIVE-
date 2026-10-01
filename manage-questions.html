@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Manage Questions - HO JAGAR COMPETITIVE</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: Arial, sans-serif;
+    }
+
+    body {
+      background: #f4f7f5;
+      color: #17221c;
+    }
+
+    .header {
+      background: linear-gradient(135deg, #087443, #0b9b58);
+      color: white;
+      padding: 20px;
+      text-align: center;
+    }
+
+    .container {
+      max-width: 1000px;
+      margin: auto;
+      padding: 20px;
+    }
+
+    .topbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 18px;
+    }
+
+    .count {
+      background: #087443;
+      color: white;
+      padding: 10px 15px;
+      border-radius: 10px;
+      font-weight: bold;
+    }
+
+    .question-card {
+      background: white;
+      padding: 20px;
+      margin-bottom: 15px;
+      border-radius: 16px;
+      box-shadow: 0 4px 15px rgba(0,0,0,.07);
+    }
+
+    .question-card h3 {
+      color: #087443;
+      margin-bottom: 12px;
+    }
+
+    .option {
+      padding: 9px;
+      margin: 5px 0;
+      background: #f4f7f5;
+      border-radius: 8px;
+    }
+
+    .correct {
+      background: #dff5e7;
+      font-weight: bold;
+    }
+
+    .info {
+      margin-top: 12px;
+      color: #555;
+    }
+
+    .buttons {
+      display: flex;
+      gap: 10px;
+      margin-top: 15px;
+    }
+
+    button {
+      border: none;
+      padding: 11px 15px;
+      border-radius: 9px;
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .edit {
+      background: #087443;
+    }
+
+    .delete {
+      background: #e63946;
+    }
+
+    .empty {
+      background: white;
+      padding: 30px;
+      text-align: center;
+      border-radius: 16px;
+      color: #777;
+    }
+
+    @media (max-width: 600px) {
+      .topbar {
+        flex-direction: column;
+        align-items: stretch;
+      }
+
+      .buttons {
+        flex-direction: column;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <header class="header">
+    <h1>HO JAGAR COMPETITIVE</h1>
+    <p>Manage Questions</p>
+  </header>
+
+  <main class="container">
+
+    <div class="topbar">
+      <h2>📚 Question List</h2>
+      <div class="count" id="count">0 Questions</div>
+    </div>
+
+    <div id="questionList"></div>
+
+  </main>
+
+  <script>
+
+    function loadQuestions() {
+
+      const questions =
+        JSON.parse(localStorage.getItem("hoJagarQuestions")) || [];
+
+      const list = document.getElementById("questionList");
+      const count = document.getElementById("count");
+
+      count.innerText = questions.length + " Questions";
+
+      list.innerHTML = "";
+
+      if (questions.length === 0) {
+
+        list.innerHTML = `
+          <div class="empty">
+            <h3>अभी कोई question नहीं है।</h3>
+            <p>पहले Add Question page से question बनाएँ।</p>
+          </div>
+        `;
+
+        return;
+      }
+
+      questions.forEach((q, index) => {
+
+        const card = document.createElement("div");
+        card.className = "question-card";
+
+        card.innerHTML = `
+          <h3>Question ${index + 1}</h3>
+
+          <p><strong>${escapeHtml(q.question)}</strong></p>
+
+          <div class="${q.answer === 0 ? "option correct" : "option"}">
+            A. ${escapeHtml(q.options[0])}
+          </div>
+
+          <div class="${q.answer === 1 ? "option correct" : "option"}">
+            B. ${escapeHtml(q.options[1])}
+          </div>
+
+          <div class="${q.answer === 2 ? "option correct" : "option"}">
+            C. ${escapeHtml(q.options[2])}
+          </div>
+
+          <div class="${q.answer === 3 ? "option correct" : "option"}">
+            D. ${escapeHtml(q.options[3])}
+          </div>
+
+          <div class="info">
+            Marks: ${q.marks} |
+            Negative: ${q.negative}
+          </div>
+
+          <div class="buttons">
+            <button class="edit" onclick="editQuestion(${index})">
+              Edit
+            </button>
+
+            <button class="delete" onclick="deleteQuestion(${index})">
+              Delete
+            </button>
+          </div>
+        `;
+
+        list.appendChild(card);
+      });
+    }
+
+    function deleteQuestion(index) {
+
+      const questions =
+        JSON.parse(localStorage.getItem("hoJagarQuestions")) || [];
+
+      if (confirm("क्या आप यह question delete करना चाहते हैं?")) {
+
+        questions.splice(index, 1);
+
+        localStorage.setItem(
+          "hoJagarQuestions",
+          JSON.stringify(questions)
+        );
+
+        loadQuestions();
+      }
+    }
+
+    function editQuestion(index) {
+
+      const questions =
+        JSON.parse(localStorage.getItem("hoJagarQuestions")) || [];
+
+      const q = questions[index];
+
+      localStorage.setItem(
+        "editQuestion",
+        JSON.stringify({
+          index: index,
+          data: q
+        })
+      );
+
+      window.location.href = "admin-questions.html";
+    }
+
+    function escapeHtml(text) {
+
+      return String(text)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+    }
+
+    loadQuestions();
+
+  </script>
+
+</body>
+</html>
