@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Manage Tests - HO JAGAR COMPETITIVE</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: Arial, sans-serif;
+    }
+
+    body {
+      background: #f4f7f5;
+      color: #17221c;
+    }
+
+    .header {
+      background: linear-gradient(135deg, #087443, #0b9b58);
+      color: white;
+      padding: 20px;
+      text-align: center;
+    }
+
+    .container {
+      max-width: 1000px;
+      margin: auto;
+      padding: 20px;
+    }
+
+    .top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 18px;
+      gap: 10px;
+    }
+
+    .count {
+      background: #087443;
+      color: white;
+      padding: 10px 14px;
+      border-radius: 10px;
+      font-weight: bold;
+    }
+
+    .test-card {
+      background: white;
+      padding: 20px;
+      border-radius: 16px;
+      margin-bottom: 15px;
+      box-shadow: 0 4px 15px rgba(0,0,0,.07);
+    }
+
+    .test-card h3 {
+      color: #087443;
+      margin-bottom: 10px;
+    }
+
+    .test-card p {
+      margin: 6px 0;
+      color: #555;
+    }
+
+    .status {
+      display: inline-block;
+      margin-top: 8px;
+      padding: 6px 10px;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: bold;
+    }
+
+    .published {
+      background: #dff5e7;
+      color: #087443;
+    }
+
+    .draft {
+      background: #eee;
+      color: #555;
+    }
+
+    .buttons {
+      display: flex;
+      gap: 10px;
+      margin-top: 15px;
+    }
+
+    button {
+      border: none;
+      padding: 11px 15px;
+      border-radius: 9px;
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .edit {
+      background: #087443;
+    }
+
+    .publish {
+      background: #e09f00;
+    }
+
+    .delete {
+      background: #e63946;
+    }
+
+    .empty {
+      background: white;
+      padding: 30px;
+      text-align: center;
+      border-radius: 16px;
+      color: #777;
+    }
+
+    @media (max-width: 600px) {
+      .top {
+        flex-direction: column;
+        align-items: stretch;
+      }
+
+      .buttons {
+        flex-direction: column;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+<header class="header">
+  <h1>HO JAGAR COMPETITIVE</h1>
+  <p>Manage Tests</p>
+</header>
+
+<main class="container">
+
+  <div class="top">
+    <h2>📝 Test List</h2>
+    <div class="count" id="count">0 Tests</div>
+  </div>
+
+  <div id="testList"></div>
+
+</main>
+
+<script>
+
+function loadTests() {
+
+  const tests =
+    JSON.parse(localStorage.getItem("hoJagarTests")) || [];
+
+  const list =
+    document.getElementById("testList");
+
+  const count =
+    document.getElementById("count");
+
+  count.innerText =
+    tests.length + " Tests";
+
+  list.innerHTML = "";
+
+  if (tests.length === 0) {
+
+    list.innerHTML = `
+      <div class="empty">
+        <h3>अभी कोई Test नहीं बनाया गया।</h3>
+        <p>पहले Create Test page से Test बनाएँ।</p>
+      </div>
+    `;
+
+    return;
+  }
+
+  tests.forEach((test, index) => {
+
+    const card =
+      document.createElement("div");
+
+    card.className = "test-card";
+
+    const statusClass =
+      test.status === "published"
+      ? "published"
+      : "draft";
+
+    const statusText =
+      test.status === "published"
+      ? "Published"
+      : "Draft";
+
+    const priceText =
+      test.type === "paid"
+      ? "₹" + test.price
+      : "Free";
+
+    card.innerHTML = `
+
+      <h3>${escapeHtml(test.name)}</h3>
+
+      <p>
+        ${escapeHtml(test.description || "No description")}
+      </p>
+
+      <p>
+        📝 Questions: ${test.totalQuestions}
+      </p>
+
+      <p>
+        ⏱️ Duration: ${test.duration} Minutes
+      </p>
+
+      <p>
+        ⭐ Marks: ${test.marks}
+      </p>
+
+      <p>
+        ❌ Negative: ${test.negative}
+      </p>
+
+      <p>
+        💰 Type: ${priceText}
+      </p>
+
+      <span class="status ${statusClass}">
+        ${statusText}
+      </span>
+
+      <div class="buttons">
+
+        <button
+          class="edit"
+          onclick="editTest(${index})">
+          Edit
+        </button>
+
+        <button
+          class="publish"
+          onclick="togglePublish(${index})">
+          ${test.status === "published"
+            ? "Unpublish"
+            : "Publish"}
+        </button>
+
+        <button
+          class="delete"
+          onclick="deleteTest(${index})">
+          Delete
+        </button>
+
+      </div>
+    `;
+
+    list.appendChild(card);
+
+  });
+}
+
+
+function deleteTest(index) {
+
+  const tests =
+    JSON.parse(localStorage.getItem("hoJagarTests")) || [];
+
+  if (
+    confirm("क्या आप यह Test delete करना चाहते हैं?")
+  ) {
+
+    tests.splice(index, 1);
+
+    localStorage.setItem(
+      "hoJagarTests",
+      JSON.stringify(tests)
+    );
+
+    loadTests();
+  }
+}
+
+
+function togglePublish(index) {
+
+  const tests =
+    JSON.parse(localStorage.getItem("hoJagarTests")) || [];
+
+  tests[index].status =
+    tests[index].status === "published"
+    ? "draft"
+    : "published";
+
+  localStorage.setItem(
+    "hoJagarTests",
+    JSON.stringify(tests)
+  );
+
+  loadTests();
+}
+
+
+function editTest(index) {
+
+  const tests =
+    JSON.parse(localStorage.getItem("hoJagarTests")) || [];
+
+  localStorage.setItem(
+    "editTest",
+    JSON.stringify({
+      index: index,
+      data: tests[index]
+    })
+  );
+
+  window.location.href =
+    "create-test.html";
+}
+
+
+function escapeHtml(text) {
+
+  return String(text)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
+}
+
+
+loadTests();
+
+</script>
+
+</body>
+</html>
