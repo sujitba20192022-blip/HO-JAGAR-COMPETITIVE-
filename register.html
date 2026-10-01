@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Student Registration - HO JAGAR COMPETITIVE</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: Arial, sans-serif;
+    }
+
+    body {
+      background: #f4f7f5;
+      color: #17221c;
+    }
+
+    .header {
+      background: linear-gradient(135deg, #087443, #0b9b58);
+      color: white;
+      padding: 22px;
+      text-align: center;
+    }
+
+    .container {
+      max-width: 500px;
+      margin: auto;
+      padding: 20px;
+    }
+
+    .box {
+      background: white;
+      padding: 25px;
+      border-radius: 18px;
+      box-shadow: 0 4px 15px rgba(0,0,0,.08);
+    }
+
+    h2 {
+      color: #087443;
+      margin-bottom: 18px;
+      text-align: center;
+    }
+
+    label {
+      display: block;
+      margin-top: 12px;
+      margin-bottom: 6px;
+      font-weight: bold;
+    }
+
+    input {
+      width: 100%;
+      padding: 13px;
+      border: 1px solid #ddd;
+      border-radius: 10px;
+      font-size: 15px;
+    }
+
+    button {
+      width: 100%;
+      padding: 14px;
+      margin-top: 20px;
+      border: none;
+      border-radius: 10px;
+      background: #087443;
+      color: white;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .login {
+      background: #555;
+    }
+
+    .message {
+      display: none;
+      margin-top: 15px;
+      padding: 12px;
+      border-radius: 10px;
+      background: #e8f5ed;
+      color: #087443;
+      text-align: center;
+    }
+  </style>
+</head>
+
+<body>
+
+<header class="header">
+  <h1>HO JAGAR COMPETITIVE</h1>
+  <p>Student Registration</p>
+</header>
+
+<main class="container">
+
+<section class="box">
+
+  <h2>🎓 Create Student Account</h2>
+
+  <label>Full Name</label>
+  <input
+    id="name"
+    type="text"
+    placeholder="अपना पूरा नाम">
+
+  <label>Mobile Number</label>
+  <input
+    id="mobile"
+    type="tel"
+    maxlength="10"
+    placeholder="10 digit mobile number">
+
+  <label>Email</label>
+  <input
+    id="email"
+    type="email"
+    placeholder="Email address">
+
+  <label>Password</label>
+  <input
+    id="password"
+    type="password"
+    placeholder="Password">
+
+  <label>Confirm Password</label>
+  <input
+    id="confirmPassword"
+    type="password"
+    placeholder="Password फिर से डालें">
+
+  <button onclick="register()">
+    Create Account
+  </button>
+
+  <button class="login"
+    onclick="window.location.href='login.html'">
+    Already have an account? Login
+  </button>
+
+  <div id="message" class="message"></div>
+
+</section>
+
+</main>
+
+<script>
+
+function register() {
+
+  const name =
+    document.getElementById("name").value.trim();
+
+  const mobile =
+    document.getElementById("mobile").value.trim();
+
+  const email =
+    document.getElementById("email").value.trim();
+
+  const password =
+    document.getElementById("password").value;
+
+  const confirmPassword =
+    document.getElementById("confirmPassword").value;
+
+
+  if (!name || !mobile || !email ||
+      !password || !confirmPassword) {
+
+    showMessage("कृपया सभी जानकारी भरें।");
+    return;
+  }
+
+
+  if (!/^[0-9]{10}$/.test(mobile)) {
+
+    showMessage("सही 10 digit mobile number डालें।");
+    return;
+  }
+
+
+  if (password !== confirmPassword) {
+
+    showMessage("Password match नहीं कर रहा है।");
+    return;
+  }
+
+
+  let students =
+    JSON.parse(localStorage.getItem("hoJagarStudents")) || [];
+
+
+  const alreadyExists =
+    students.some(
+      student => student.mobile === mobile
+    );
+
+
+  if (alreadyExists) {
+
+    showMessage("यह mobile number पहले से registered है।");
+    return;
+  }
+
+
+  const student = {
+
+    id: Date.now(),
+
+    name: name,
+
+    mobile: mobile,
+
+    email: email,
+
+    password: password
+
+  };
+
+
+  students.push(student);
+
+
+  localStorage.setItem(
+    "hoJagarStudents",
+    JSON.stringify(students)
+  );
+
+
+  showMessage(
+    "Registration successful! अब Login करें।"
+  );
+
+
+  document.getElementById("name").value = "";
+  document.getElementById("mobile").value = "";
+  document.getElementById("email").value = "";
+  document.getElementById("password").value = "";
+  document.getElementById("confirmPassword").value = "";
+}
+
+
+function showMessage(text) {
+
+  const message =
+    document.getElementById("message");
+
+  message.innerText = text;
+  message.style.display = "block";
+}
+
+</script>
+
+</body>
+</html>
