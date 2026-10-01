@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Create Test - HO JAGAR COMPETITIVE</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: Arial, sans-serif;
+    }
+
+    body {
+      background: #f4f7f5;
+      color: #17221c;
+    }
+
+    .header {
+      background: linear-gradient(135deg, #087443, #0b9b58);
+      color: white;
+      padding: 20px;
+      text-align: center;
+    }
+
+    .container {
+      max-width: 850px;
+      margin: auto;
+      padding: 20px;
+    }
+
+    .box {
+      background: white;
+      padding: 22px;
+      border-radius: 18px;
+      box-shadow: 0 4px 15px rgba(0,0,0,.08);
+    }
+
+    h2 {
+      color: #087443;
+      margin-bottom: 18px;
+    }
+
+    label {
+      display: block;
+      margin-top: 14px;
+      margin-bottom: 6px;
+      font-weight: bold;
+    }
+
+    input,
+    textarea,
+    select {
+      width: 100%;
+      padding: 13px;
+      border: 1px solid #ddd;
+      border-radius: 10px;
+      font-size: 15px;
+    }
+
+    textarea {
+      min-height: 90px;
+      resize: vertical;
+    }
+
+    button {
+      width: 100%;
+      padding: 14px;
+      margin-top: 20px;
+      border: none;
+      border-radius: 10px;
+      background: #087443;
+      color: white;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .message {
+      display: none;
+      margin-top: 15px;
+      padding: 12px;
+      border-radius: 10px;
+      background: #e8f5ed;
+      color: #087443;
+    }
+  </style>
+</head>
+
+<body>
+
+<header class="header">
+  <h1>HO JAGAR COMPETITIVE</h1>
+  <p>Create New Test</p>
+</header>
+
+<main class="container">
+
+<section class="box">
+
+  <h2>📝 Create Test</h2>
+
+  <label>Test Name</label>
+  <input
+    id="testName"
+    type="text"
+    placeholder="जैसे: Jharkhand GK Test">
+
+  <label>Test Description</label>
+  <textarea
+    id="description"
+    placeholder="Test के बारे में जानकारी"></textarea>
+
+  <label>Total Questions</label>
+  <input
+    id="totalQuestions"
+    type="number"
+    min="1"
+    max="100"
+    value="100">
+
+  <label>Duration (Minutes)</label>
+  <input
+    id="duration"
+    type="number"
+    min="1"
+    value="60">
+
+  <label>Marks Per Question</label>
+  <input
+    id="marks"
+    type="number"
+    min="0"
+    value="1">
+
+  <label>Negative Marking</label>
+  <input
+    id="negative"
+    type="number"
+    min="0"
+    step="0.25"
+    value="0">
+
+  <label>Test Type</label>
+  <select id="testType" onchange="showPrice()">
+    <option value="free">Free Test</option>
+    <option value="paid">Paid Test</option>
+  </select>
+
+  <div id="priceBox" style="display:none;">
+
+    <label>Test Price (₹)</label>
+
+    <input
+      id="price"
+      type="number"
+      min="1"
+      placeholder="जैसे: 49">
+
+  </div>
+
+  <label>Test Status</label>
+
+  <select id="status">
+    <option value="draft">Draft</option>
+    <option value="published">Published</option>
+  </select>
+
+  <button onclick="saveTest()">
+    Save Test
+  </button>
+
+  <div id="message" class="message"></div>
+
+</section>
+
+</main>
+
+<script>
+
+function showPrice() {
+
+  const type =
+    document.getElementById("testType").value;
+
+  const priceBox =
+    document.getElementById("priceBox");
+
+  if (type === "paid") {
+    priceBox.style.display = "block";
+  } else {
+    priceBox.style.display = "none";
+  }
+}
+
+
+function saveTest() {
+
+  const name =
+    document.getElementById("testName").value.trim();
+
+  const description =
+    document.getElementById("description").value.trim();
+
+  const totalQuestions =
+    Number(document.getElementById("totalQuestions").value);
+
+  const duration =
+    Number(document.getElementById("duration").value);
+
+  const marks =
+    Number(document.getElementById("marks").value);
+
+  const negative =
+    Number(document.getElementById("negative").value);
+
+  const type =
+    document.getElementById("testType").value;
+
+  const price =
+    Number(document.getElementById("price").value || 0);
+
+  const status =
+    document.getElementById("status").value;
+
+
+  if (!name) {
+
+    showMessage("कृपया Test Name भरें।");
+    return;
+  }
+
+
+  if (totalQuestions < 1 || totalQuestions > 100) {
+
+    showMessage("Questions की संख्या 1 से 100 के बीच होनी चाहिए।");
+    return;
+  }
+
+
+  if (duration < 1) {
+
+    showMessage("Duration सही डालें।");
+    return;
+  }
+
+
+  if (type === "paid" && price <= 0) {
+
+    showMessage("Paid Test के लिए Price डालें।");
+    return;
+  }
+
+
+  const test = {
+
+    id: Date.now(),
+
+    name: name,
+
+    description: description,
+
+    totalQuestions: totalQuestions,
+
+    duration: duration,
+
+    marks: marks,
+
+    negative: negative,
+
+    type: type,
+
+    price: price,
+
+    status: status
+
+  };
+
+
+  let tests =
+    JSON.parse(localStorage.getItem("hoJagarTests")) || [];
+
+
+  tests.push(test);
+
+
+  localStorage.setItem(
+    "hoJagarTests",
+    JSON.stringify(tests)
+  );
+
+
+  showMessage(
+    "Test successfully save हो गया।"
+  );
+
+
+  document.getElementById("testName").value = "";
+  document.getElementById("description").value = "";
+
+}
+
+
+function showMessage(text) {
+
+  const message =
+    document.getElementById("message");
+
+  message.innerText = text;
+
+  message.style.display = "block";
+}
+
+</script>
+
+</body>
+      </html>
