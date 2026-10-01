@@ -1,0 +1,21 @@
+function calculateRanks(results) {
+
+  const sorted = [...results].sort(
+    (a, b) => b.score - a.score
+  );
+
+  let lastScore = null;
+  let currentRank = 0;
+
+  sorted.forEach((result, index) => {
+
+    if (result.score !== lastScore) {
+      currentRank = index + 1;
+      lastScore = result.score;
+    }
+
+    result.rank = currentRank;
+  });
+
+  return sorted;
+}
