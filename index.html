@@ -253,7 +253,21 @@
   </footer>
 
   <script>
+let deferredPrompt;
 
+window.addEventListener("beforeinstallprompt", function(event) {
+  event.preventDefault();
+  deferredPrompt = event;
+
+  const installButton = document.getElementById("installButton");
+  installButton.style.display = "block";
+
+  installButton.onclick = async function() {
+    deferredPrompt.prompt();
+    deferredPrompt = null;
+    installButton.style.display = "none";
+  };
+});
     function showStudentLogin() {
       document.getElementById("studentLogin").style.display = "block";
       document.getElementById("adminLogin").style.display = "none";
