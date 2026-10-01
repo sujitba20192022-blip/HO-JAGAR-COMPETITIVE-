@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="hi">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta name="viewport"
+content="width=device-width, initial-scale=1.0">
+
+<title>My Result - HO JAGAR COMPETITIVE</title>
+
+<style>
+
+*{
+box-sizing:border-box;
+margin:0;
+padding:0;
+font-family:Arial,sans-serif;
+}
+
+body{
+background:#f4f7f5;
+color:#17221c;
+}
+
+.header{
+background:linear-gradient(135deg,#087443,#0b9b58);
+color:white;
+padding:22px;
+text-align:center;
+}
+
+.container{
+max-width:700px;
+margin:auto;
+padding:20px;
+}
+
+.result-box{
+background:white;
+padding:25px;
+border-radius:18px;
+box-shadow:0 4px 15px rgba(0,0,0,.08);
+}
+
+.result-box h2{
+color:#087443;
+text-align:center;
+margin-bottom:20px;
+}
+
+.test-name{
+text-align:center;
+font-size:20px;
+font-weight:bold;
+margin-bottom:20px;
+}
+
+.stats{
+display:grid;
+grid-template-columns:repeat(2,1fr);
+gap:12px;
+}
+
+.stat{
+background:#f4f7f5;
+padding:18px;
+border-radius:12px;
+text-align:center;
+}
+
+.stat strong{
+display:block;
+font-size:25px;
+color:#087443;
+margin-bottom:6px;
+}
+
+.rank{
+margin-top:18px;
+padding:20px;
+background:#e8f5ed;
+border-radius:14px;
+text-align:center;
+}
+
+.rank strong{
+display:block;
+font-size:32px;
+color:#087443;
+}
+
+button{
+width:100%;
+padding:14px;
+margin-top:20px;
+border:none;
+border-radius:10px;
+background:#087443;
+color:white;
+font-size:16px;
+font-weight:bold;
+cursor:pointer;
+}
+
+.empty{
+background:white;
+padding:30px;
+border-radius:18px;
+text-align:center;
+}
+
+@media(max-width:600px){
+
+.stats{
+grid-template-columns:1fr;
+}
+
+}
+
+</style>
+
+</head>
+
+
+<body>
+
+
+<header class="header">
+
+<h1>HO JAGAR COMPETITIVE</h1>
+
+<p>My Result</p>
+
+</header>
+
+
+<main class="container">
+
+
+<section class="result-box">
+
+<h2>🏆 Test Result</h2>
+
+<div
+class="test-name"
+id="testName">
+Result
+</div>
+
+
+<div class="stats">
+
+
+<div class="stat">
+
+<strong id="score">
+0
+</strong>
+
+Score
+
+</div>
+
+
+<div class="stat">
+
+<strong id="percentage">
+0%
+</strong>
+
+Percentage
+
+</div>
+
+
+<div class="stat">
+
+<strong id="correct">
+0
+</strong>
+
+Correct
+
+</div>
+
+
+<div class="stat">
+
+<strong id="wrong">
+0
+</strong>
+
+Wrong
+
+</div>
+
+
+<div class="stat">
+
+<strong id="attempted">
+0
+</strong>
+
+Attempted
+
+</div>
+
+
+<div class="stat">
+
+<strong id="totalMarks">
+0
+</strong>
+
+Total Marks
+
+</div>
+
+
+</div>
+
+
+<div class="rank">
+
+Rank
+
+<strong id="rank">
+--
+</strong>
+
+</div>
+
+
+<button
+onclick="window.location.href='dashboard.html'">
+
+Back to Dashboard
+
+</button>
+
+
+</section>
+
+
+</main>
+
+
+<script>
+
+
+function loadMyResult(){
+
+
+const studentData=
+
+JSON.parse(
+localStorage.getItem("loggedInStudent")
+);
+
+
+if(!studentData){
+
+window.location.href="login.html";
+
+return;
+
+}
+
+
+
+const results=
+
+JSON.parse(
+localStorage.getItem("hoJagarResults")
+)||[];
+
+
+
+const myResults=
+
+results.filter(
+result =>
+result.mobile===studentData.mobile
+);
+
+
+
+if(myResults.length===0){
+
+document.querySelector(".result-box").innerHTML=`
+
+<div class="empty">
+
+<h2>📊 अभी कोई Result नहीं है।</h2>
+
+<p>
+Test complete करने के बाद आपका result यहाँ दिखाई देगा।
+</p>
+
+<button
+onclick="window.location.href='dashboard.html'">
+
+Back to Dashboard
+
+</button>
+
+</div>
+
+`;
+
+return;
+
+}
+
+
+
+const latestResult=
+myResults[myResults.length-1];
+
+
+
+document.getElementById("testName")
+.innerText=
+latestResult.testName;
+
+
+document.getElementById("score")
+.innerText=
+latestResult.score;
+
+
+document.getElementById("percentage")
+.innerText=
+latestResult.percentage+"%";
+
+
+document.getElementById("correct")
+.innerText=
+latestResult.correct;
+
+
+document.getElementById("wrong")
+.innerText=
+latestResult.wrong;
+
+
+document.getElementById("attempted")
+.innerText=
+latestResult.attempted;
+
+
+document.getElementById("totalMarks")
+.innerText=
+latestResult.totalMarks;
+
+
+document.getElementById("rank")
+.innerText=
+latestResult.rank || "--";
+
+}
+
+
+loadMyResult();
+
+</script>
+
+
+</body>
+
+</html>
