@@ -62,11 +62,6 @@
 
     textarea {
       min-height: 100px;
-      resize: vertical;
-    }
-
-    .option {
-      margin-top: 10px;
     }
 
     button {
@@ -79,10 +74,9 @@
       color: white;
       font-size: 16px;
       font-weight: bold;
-      cursor: pointer;
     }
 
-    .reset {
+    .clear {
       background: #777;
     }
 
@@ -99,137 +93,207 @@
 
 <body>
 
-  <header class="header">
-    <h1>HO JAGAR COMPETITIVE</h1>
-    <p>Admin Question Management</p>
-  </header>
+<header class="header">
+  <h1>HO JAGAR COMPETITIVE</h1>
+  <p>Admin Question Management</p>
+</header>
 
-  <main class="container">
+<main class="container">
 
-    <section class="box">
+<section class="box">
 
-      <h2>➕ Add New Question</h2>
+  <h2 id="title">➕ Add New Question</h2>
 
-      <label>Question</label>
-      <textarea id="question"
-        placeholder="अपना question यहाँ लिखें"></textarea>
+  <label>Question</label>
+  <textarea id="question"
+    placeholder="अपना question यहाँ लिखें"></textarea>
 
-      <label>Option A</label>
-      <input id="optionA" type="text" placeholder="Option A">
+  <label>Option A</label>
+  <input id="optionA" type="text" placeholder="Option A">
 
-      <label>Option B</label>
-      <input id="optionB" type="text" placeholder="Option B">
+  <label>Option B</label>
+  <input id="optionB" type="text" placeholder="Option B">
 
-      <label>Option C</label>
-      <input id="optionC" type="text" placeholder="Option C">
+  <label>Option C</label>
+  <input id="optionC" type="text" placeholder="Option C">
 
-      <label>Option D</label>
-      <input id="optionD" type="text" placeholder="Option D">
+  <label>Option D</label>
+  <input id="optionD" type="text" placeholder="Option D">
 
-      <label>Correct Answer</label>
-      <select id="correctAnswer">
-        <option value="">सही answer चुनें</option>
-        <option value="0">Option A</option>
-        <option value="1">Option B</option>
-        <option value="2">Option C</option>
-        <option value="3">Option D</option>
-      </select>
+  <label>Correct Answer</label>
+  <select id="correctAnswer">
+    <option value="">सही answer चुनें</option>
+    <option value="0">Option A</option>
+    <option value="1">Option B</option>
+    <option value="2">Option C</option>
+    <option value="3">Option D</option>
+  </select>
 
-      <label>Marks</label>
-      <input id="marks" type="number" value="1" min="0">
+  <label>Marks</label>
+  <input id="marks" type="number" value="1" min="0">
 
-      <label>Negative Marking</label>
-      <input id="negative" type="number" value="0" min="0" step="0.25">
+  <label>Negative Marking</label>
+  <input id="negative" type="number" value="0" min="0" step="0.25">
 
-      <button onclick="saveQuestion()">
-        Save Question
-      </button>
+  <button id="saveButton" onclick="saveQuestion()">
+    Save Question
+  </button>
 
-      <button class="reset" onclick="resetForm()">
-        Clear
-      </button>
+  <button class="clear" onclick="resetForm()">
+    Clear
+  </button>
 
-      <div id="message" class="message"></div>
+  <div id="message" class="message"></div>
 
-    </section>
+</section>
 
-  </main>
+</main>
 
-  <script>
+<script>
 
-    function saveQuestion() {
+let editIndex = -1;
 
-      const question = document.getElementById("question").value.trim();
-      const optionA = document.getElementById("optionA").value.trim();
-      const optionB = document.getElementById("optionB").value.trim();
-      const optionC = document.getElementById("optionC").value.trim();
-      const optionD = document.getElementById("optionD").value.trim();
-      const correctAnswer = document.getElementById("correctAnswer").value;
-      const marks = document.getElementById("marks").value;
-      const negative = document.getElementById("negative").value;
+function saveQuestion() {
 
-      if (
-        !question ||
-        !optionA ||
-        !optionB ||
-        !optionC ||
-        !optionD ||
-        correctAnswer === ""
-      ) {
-        showMessage("कृपया सभी जानकारी भरें।");
-        return;
-      }
+  const question = document.getElementById("question").value.trim();
+  const optionA = document.getElementById("optionA").value.trim();
+  const optionB = document.getElementById("optionB").value.trim();
+  const optionC = document.getElementById("optionC").value.trim();
+  const optionD = document.getElementById("optionD").value.trim();
+  const correctAnswer =
+    document.getElementById("correctAnswer").value;
 
-      const questionData = {
-        question: question,
-        options: [
-          optionA,
-          optionB,
-          optionC,
-          optionD
-        ],
-        answer: Number(correctAnswer),
-        marks: Number(marks),
-        negative: Number(negative)
-      };
+  const marks =
+    document.getElementById("marks").value;
 
-      let savedQuestions =
-        JSON.parse(localStorage.getItem("hoJagarQuestions")) || [];
+  const negative =
+    document.getElementById("negative").value;
 
-      savedQuestions.push(questionData);
+  if (
+    !question ||
+    !optionA ||
+    !optionB ||
+    !optionC ||
+    !optionD ||
+    correctAnswer === ""
+  ) {
+    showMessage("कृपया सभी जानकारी भरें।");
+    return;
+  }
 
-      localStorage.setItem(
-        "hoJagarQuestions",
-        JSON.stringify(savedQuestions)
-      );
+  const questionData = {
+    question: question,
+    options: [
+      optionA,
+      optionB,
+      optionC,
+      optionD
+    ],
+    answer: Number(correctAnswer),
+    marks: Number(marks),
+    negative: Number(negative)
+  };
 
-      showMessage(
-        "Question successfully save हो गया। Total Questions: " +
-        savedQuestions.length
-      );
+  let questions =
+    JSON.parse(localStorage.getItem("hoJagarQuestions")) || [];
 
-      resetForm();
-    }
+  if (editIndex === -1) {
 
-    function resetForm() {
-      document.getElementById("question").value = "";
-      document.getElementById("optionA").value = "";
-      document.getElementById("optionB").value = "";
-      document.getElementById("optionC").value = "";
-      document.getElementById("optionD").value = "";
-      document.getElementById("correctAnswer").value = "";
-      document.getElementById("marks").value = 1;
-      document.getElementById("negative").value = 0;
-    }
+    questions.push(questionData);
 
-    function showMessage(text) {
-      const message = document.getElementById("message");
+    showMessage("Question successfully save हो गया।");
 
-      message.innerText = text;
-      message.style.display = "block";
-    }
+  } else {
 
-  </script>
+    questions[editIndex] = questionData;
+
+    showMessage("Question successfully update हो गया।");
+
+    editIndex = -1;
+
+    document.getElementById("title").innerText =
+      "➕ Add New Question";
+
+    document.getElementById("saveButton").innerText =
+      "Save Question";
+  }
+
+  localStorage.setItem(
+    "hoJagarQuestions",
+    JSON.stringify(questions)
+  );
+
+  localStorage.removeItem("editQuestion");
+
+  resetForm();
+}
+
+function loadEditQuestion() {
+
+  const editData =
+    JSON.parse(localStorage.getItem("editQuestion"));
+
+  if (!editData) return;
+
+  editIndex = editData.index;
+
+  const q = editData.data;
+
+  document.getElementById("title").innerText =
+    "✏️ Edit Question";
+
+  document.getElementById("saveButton").innerText =
+    "Update Question";
+
+  document.getElementById("question").value =
+    q.question;
+
+  document.getElementById("optionA").value =
+    q.options[0];
+
+  document.getElementById("optionB").value =
+    q.options[1];
+
+  document.getElementById("optionC").value =
+    q.options[2];
+
+  document.getElementById("optionD").value =
+    q.options[3];
+
+  document.getElementById("correctAnswer").value =
+    q.answer;
+
+  document.getElementById("marks").value =
+    q.marks;
+
+  document.getElementById("negative").value =
+    q.negative;
+}
+
+function resetForm() {
+
+  document.getElementById("question").value = "";
+  document.getElementById("optionA").value = "";
+  document.getElementById("optionB").value = "";
+  document.getElementById("optionC").value = "";
+  document.getElementById("optionD").value = "";
+  document.getElementById("correctAnswer").value = "";
+  document.getElementById("marks").value = 1;
+  document.getElementById("negative").value = 0;
+}
+
+function showMessage(text) {
+
+  const message =
+    document.getElementById("message");
+
+  message.innerText = text;
+  message.style.display = "block";
+}
+
+loadEditQuestion();
+
+</script>
 
 </body>
-          </html>
+</html>
