@@ -186,6 +186,13 @@ function saveQuestion() {
   const optionC = document.getElementById("optionC").value.trim();
   const optionD = document.getElementById("optionD").value.trim();
   const correctAnswer =
+    const testId =
+  document.getElementById("testId").value;
+
+if (!testId) {
+  showMessage("पहले Test चुनें।");
+  return;
+  }
     document.getElementById("correctAnswer").value;
 
   const marks =
@@ -207,6 +214,7 @@ function saveQuestion() {
   }
 
   const questionData = {
+    testId: testId,
     question: question,
     options: [
       optionA,
@@ -257,7 +265,9 @@ function loadEditQuestion() {
 loadTests();
   const editData =
     JSON.parse(localStorage.getItem("editQuestion"));
-
+questions = questions.filter(
+  q => String(q.testId) === String(selectedTest.id)
+);
   if (!editData) return;
 
   editIndex = editData.index;
@@ -266,7 +276,8 @@ loadTests();
 
   document.getElementById("title").innerText =
     "✏️ Edit Question";
-
+document.getElementById("testId").value =
+  q.testId || "";
   document.getElementById("saveButton").innerText =
     "Update Question";
 
@@ -298,6 +309,7 @@ loadTests();
 function resetForm() {
 
   document.getElementById("question").value = "";
+  document.getElementById("testId").value = "";
   document.getElementById("optionA").value = "";
   document.getElementById("optionB").value = "";
   document.getElementById("optionC").value = "";
