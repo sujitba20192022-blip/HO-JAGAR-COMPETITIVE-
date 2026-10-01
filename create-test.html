@@ -3,7 +3,6 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
   <title>Create Test - HO JAGAR COMPETITIVE</title>
 
   <style>
@@ -79,6 +78,10 @@
       cursor: pointer;
     }
 
+    .clear {
+      background: #777;
+    }
+
     .message {
       display: none;
       margin-top: 15px;
@@ -94,55 +97,38 @@
 
 <header class="header">
   <h1>HO JAGAR COMPETITIVE</h1>
-  <p>Create New Test</p>
+  <p id="pageTitle">Create New Test</p>
 </header>
 
 <main class="container">
 
 <section class="box">
 
-  <h2>📝 Create Test</h2>
+  <h2 id="formTitle">📝 Create Test</h2>
 
   <label>Test Name</label>
-  <input
-    id="testName"
-    type="text"
+  <input id="testName" type="text"
     placeholder="जैसे: Jharkhand GK Test">
 
   <label>Test Description</label>
-  <textarea
-    id="description"
+  <textarea id="description"
     placeholder="Test के बारे में जानकारी"></textarea>
 
   <label>Total Questions</label>
-  <input
-    id="totalQuestions"
-    type="number"
-    min="1"
-    max="100"
-    value="100">
+  <input id="totalQuestions" type="number"
+    min="1" max="100" value="100">
 
   <label>Duration (Minutes)</label>
-  <input
-    id="duration"
-    type="number"
-    min="1"
-    value="60">
+  <input id="duration" type="number"
+    min="1" value="60">
 
   <label>Marks Per Question</label>
-  <input
-    id="marks"
-    type="number"
-    min="0"
-    value="1">
+  <input id="marks" type="number"
+    min="0" value="1">
 
   <label>Negative Marking</label>
-  <input
-    id="negative"
-    type="number"
-    min="0"
-    step="0.25"
-    value="0">
+  <input id="negative" type="number"
+    min="0" step="0.25" value="0">
 
   <label>Test Type</label>
   <select id="testType" onchange="showPrice()">
@@ -153,12 +139,8 @@
   <div id="priceBox" style="display:none;">
 
     <label>Test Price (₹)</label>
-
-    <input
-      id="price"
-      type="number"
-      min="1"
-      placeholder="जैसे: 49">
+    <input id="price" type="number"
+      min="1" placeholder="जैसे: 49">
 
   </div>
 
@@ -169,8 +151,12 @@
     <option value="published">Published</option>
   </select>
 
-  <button onclick="saveTest()">
+  <button id="saveButton" onclick="saveTest()">
     Save Test
+  </button>
+
+  <button class="clear" onclick="resetForm()">
+    Clear
   </button>
 
   <div id="message" class="message"></div>
@@ -181,19 +167,16 @@
 
 <script>
 
+let editIndex = -1;
+
+
 function showPrice() {
 
   const type =
     document.getElementById("testType").value;
 
-  const priceBox =
-    document.getElementById("priceBox");
-
-  if (type === "paid") {
-    priceBox.style.display = "block";
-  } else {
-    priceBox.style.display = "none";
-  }
+  document.getElementById("priceBox").style.display =
+    type === "paid" ? "block" : "none";
 }
 
 
@@ -228,36 +211,35 @@ function saveTest() {
 
 
   if (!name) {
-
     showMessage("कृपया Test Name भरें।");
     return;
   }
 
-
   if (totalQuestions < 1 || totalQuestions > 100) {
-
-    showMessage("Questions की संख्या 1 से 100 के बीच होनी चाहिए।");
+    showMessage("Questions 1 से 100 के बीच होने चाहिए।");
     return;
   }
 
-
   if (duration < 1) {
-
     showMessage("Duration सही डालें।");
     return;
   }
 
-
   if (type === "paid" && price <= 0) {
-
     showMessage("Paid Test के लिए Price डालें।");
     return;
   }
 
 
-  const test = {
+  let tests =
+    JSON.parse(localStorage.getItem("hoJagarTests")) || [];
 
-    id: Date.now(),
+
+  const testData = {
+
+    id: editIndex === -1
+      ? Date.now()
+      : tests[editIndex].id,
 
     name: name,
 
@@ -280,11 +262,29 @@ function saveTest() {
   };
 
 
-  let tests =
-    JSON.parse(localStorage.getItem("hoJagarTests")) || [];
+  if (editIndex === -1) {
 
+    tests.push(testData);
 
-  tests.push(test);
+    showMessage("Test successfully save हो गया।");
+
+  } else {
+
+    tests[editIndex] = testData;
+
+    showMessage("Test successfully update हो गया।");
+
+    editIndex = -1;
+
+    document.getElementById("formTitle").innerText =
+      "📝 Create Test";
+
+    document.getElementById("pageTitle").innerText =
+      "Create New Test";
+
+    document.getElementById("saveButton").innerText =
+      "Save Test";
+  }
 
 
   localStorage.setItem(
@@ -292,15 +292,76 @@ function saveTest() {
     JSON.stringify(tests)
   );
 
+  localStorage.removeItem("editTest");
+}
 
-  showMessage(
-    "Test successfully save हो गया।"
-  );
 
+function loadEditTest() {
+
+  const editData =
+    JSON.parse(localStorage.getItem("editTest"));
+
+  if (!editData) return;
+
+  editIndex = editData.index;
+
+  const test = editData.data;
+
+
+  document.getElementById("formTitle").innerText =
+    "✏️ Edit Test";
+
+  document.getElementById("pageTitle").innerText =
+    "Edit Test";
+
+  document.getElementById("saveButton").innerText =
+    "Update Test";
+
+
+  document.getElementById("testName").value =
+    test.name;
+
+  document.getElementById("description").value =
+    test.description || "";
+
+  document.getElementById("totalQuestions").value =
+    test.totalQuestions;
+
+  document.getElementById("duration").value =
+    test.duration;
+
+  document.getElementById("marks").value =
+    test.marks;
+
+  document.getElementById("negative").value =
+    test.negative;
+
+  document.getElementById("testType").value =
+    test.type;
+
+  document.getElementById("price").value =
+    test.price || 0;
+
+  document.getElementById("status").value =
+    test.status;
+
+  showPrice();
+}
+
+
+function resetForm() {
 
   document.getElementById("testName").value = "";
   document.getElementById("description").value = "";
+  document.getElementById("totalQuestions").value = 100;
+  document.getElementById("duration").value = 60;
+  document.getElementById("marks").value = 1;
+  document.getElementById("negative").value = 0;
+  document.getElementById("testType").value = "free";
+  document.getElementById("price").value = "";
+  document.getElementById("status").value = "draft";
 
+  showPrice();
 }
 
 
@@ -310,11 +371,13 @@ function showMessage(text) {
     document.getElementById("message");
 
   message.innerText = text;
-
   message.style.display = "block";
 }
+
+
+loadEditTest();
 
 </script>
 
 </body>
-      </html>
+</html>
