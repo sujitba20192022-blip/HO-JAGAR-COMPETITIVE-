@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Manage Students - HO JAGAR COMPETITIVE</title>
+
+<style>
+
+*{
+  box-sizing:border-box;
+  margin:0;
+  padding:0;
+  font-family:Arial,sans-serif;
+}
+
+body{
+  background:#f4f7f5;
+  color:#17221c;
+}
+
+.header{
+  background:linear-gradient(135deg,#087443,#0b9b58);
+  color:white;
+  padding:20px;
+  text-align:center;
+}
+
+.container{
+  max-width:1000px;
+  margin:auto;
+  padding:20px;
+}
+
+.top{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:10px;
+  margin-bottom:18px;
+}
+
+.count{
+  background:#087443;
+  color:white;
+  padding:10px 14px;
+  border-radius:10px;
+  font-weight:bold;
+}
+
+.student-card{
+  background:white;
+  padding:20px;
+  margin-bottom:15px;
+  border-radius:16px;
+  box-shadow:0 4px 15px rgba(0,0,0,.07);
+}
+
+.student-card h3{
+  color:#087443;
+  margin-bottom:12px;
+}
+
+.student-card p{
+  margin:7px 0;
+  color:#555;
+}
+
+.buttons{
+  margin-top:15px;
+}
+
+.delete{
+  border:none;
+  padding:11px 16px;
+  border-radius:9px;
+  background:#e63946;
+  color:white;
+  font-weight:bold;
+  cursor:pointer;
+}
+
+.empty{
+  background:white;
+  padding:30px;
+  text-align:center;
+  border-radius:16px;
+  color:#777;
+}
+
+@media(max-width:600px){
+
+  .top{
+    flex-direction:column;
+    align-items:stretch;
+  }
+
+}
+
+</style>
+</head>
+
+<body>
+
+<header class="header">
+
+  <h1>HO JAGAR COMPETITIVE</h1>
+
+  <p>Student Management</p>
+
+</header>
+
+
+<main class="container">
+
+  <div class="top">
+
+    <h2>👨‍🎓 Student List</h2>
+
+    <div class="count" id="count">
+      0 Students
+    </div>
+
+  </div>
+
+
+  <div id="studentList"></div>
+
+</main>
+
+
+<script>
+
+function loadStudents(){
+
+  const students =
+    JSON.parse(
+      localStorage.getItem("hoJagarStudents")
+    ) || [];
+
+
+  const list =
+    document.getElementById("studentList");
+
+  const count =
+    document.getElementById("count");
+
+
+  count.innerText =
+    students.length + " Students";
+
+
+  list.innerHTML = "";
+
+
+  if(students.length === 0){
+
+    list.innerHTML = `
+      <div class="empty">
+
+        <h3>अभी कोई Student Registered नहीं है।</h3>
+
+        <p>
+          Student registration करने के बाद यहाँ दिखाई देगा।
+        </p>
+
+      </div>
+    `;
+
+    return;
+  }
+
+
+  students.forEach((student,index)=>{
+
+    const card =
+      document.createElement("div");
+
+    card.className = "student-card";
+
+
+    card.innerHTML = `
+
+      <h3>👨‍🎓 ${escapeHtml(student.name)}</h3>
+
+      <p>
+        📱 Mobile:
+        ${escapeHtml(student.mobile)}
+      </p>
+
+      <p>
+        📧 Email:
+        ${escapeHtml(student.email)}
+      </p>
+
+      <p>
+        🆔 Student ID:
+        ${student.id}
+      </p>
+
+      <div class="buttons">
+
+        <button
+          class="delete"
+          onclick="deleteStudent(${index})">
+
+          Delete Student
+
+        </button>
+
+      </div>
+
+    `;
+
+
+    list.appendChild(card);
+
+  });
+
+}
+
+
+function deleteStudent(index){
+
+  const students =
+    JSON.parse(
+      localStorage.getItem("hoJagarStudents")
+    ) || [];
+
+
+  if(
+    confirm(
+      "क्या आप इस Student को delete करना चाहते हैं?"
+    )
+  ){
+
+    students.splice(index,1);
+
+
+    localStorage.setItem(
+      "hoJagarStudents",
+      JSON.stringify(students)
+    );
+
+
+    loadStudents();
+
+  }
+
+}
+
+
+function escapeHtml(text){
+
+  return String(text)
+
+    .replace(/&/g,"&amp;")
+
+    .replace(/</g,"&lt;")
+
+    .replace(/>/g,"&gt;")
+
+    .replace(/"/g,"&quot;")
+
+    .replace(/'/g,"&#039;");
+
+}
+
+
+loadStudents();
+
+</script>
+
+</body>
+</html>
