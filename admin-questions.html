@@ -103,7 +103,10 @@
 <section class="box">
 
   <h2 id="title">➕ Add New Question</h2>
-
+<label>Select Test</label>
+<select id="testId">
+  <option value="">पहले Test चुनें</option>
+</select>
   <label>Question</label>
   <textarea id="question"
     placeholder="अपना question यहाँ लिखें"></textarea>
@@ -152,7 +155,29 @@
 <script>
 
 let editIndex = -1;
+function loadTests() {
 
+  const tests =
+    JSON.parse(localStorage.getItem("hoJagarTests")) || [];
+
+  const select =
+    document.getElementById("testId");
+
+  select.innerHTML =
+    '<option value="">पहले Test चुनें</option>';
+
+  tests.forEach(test => {
+
+    const option =
+      document.createElement("option");
+
+    option.value = test.id;
+    option.textContent = test.name;
+
+    select.appendChild(option);
+
+  });
+  }
 function saveQuestion() {
 
   const question = document.getElementById("question").value.trim();
@@ -229,7 +254,7 @@ function saveQuestion() {
 }
 
 function loadEditQuestion() {
-
+loadTests();
   const editData =
     JSON.parse(localStorage.getItem("editQuestion"));
 
