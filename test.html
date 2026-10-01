@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+i<!DOCTYPE html>
 <html lang="hi">
 <head>
   <meta charset="UTF-8">
@@ -239,11 +239,385 @@
 
   </main>
 
-  <script>
+let currentQuestion = 1;
+let questions = [];
+let answers = {};
+let timeLeft = 60 * 60;
 
-    let currentQuestion = 1;
-    let totalQuestions = 100;
-    let timeLeft = 60 * 60;
+
+function loadQuestions() {
+
+  questions =
+    JSON.parse(
+      localStorage.getItem("hoJagarQuestions")
+    ) || [];
+
+
+  if (questions.length === 0) {
+
+    document.getElementById("question").innerText =
+      "अभी कोई question उपलब्ध नहीं है।";
+
+    document.getElementById("options").innerHTML = "";
+
+    document.getElementById("questionNumber").innerText =
+      "No Questions";
+
+    return;
+  }
+
+
+  showQuestion();
+}
+
+
+function showQuestion() {
+
+  const q = questions[currentQuestion - 1];
+
+
+  document.getElementById("questionNumber").innerText =
+    "Question " +
+    currentQuestion +
+    " of " +
+    questions.length;
+
+
+  document.getElementById("question").innerText =
+    q.question;
+
+
+  const optionsBox =
+    document.getElementById("options");
+
+  optionsBox.innerHTML = "";
+
+
+  q.options.forEach((option, index) => {
+
+    const label =
+      document.createElement("label");
+
+    label.className = "option";
+
+
+    label.innerHTML = `
+      <input
+        type="radio"
+        name="answer"
+        value="${index}"
+        ${answers[currentQuestion] === index ? "checked" : ""}>
+
+      ${String.fromCharCode(65 + index)}.
+      ${escapeHtml(option)}
+    `;
+
+
+    label.querySelector("input")
+      .addEventListener("change", function() {
+
+        answers[currentQuestion] =
+          Number(this.value);
+
+      });
+
+
+    optionsBox.appendChild(label);
+
+  });
+
+
+  updateNavigation();
+
+}
+
+
+function nextQuestion() {
+
+  if (currentQuestion < questions.length) {
+
+    currentQuestion++;
+
+    showQuestion();
+
+  }
+
+}
+
+
+function previousQuestion() {
+
+  if (currentQuestion > 1) {
+
+    currentQuestion--;
+
+    showQuestion();
+
+  }
+
+}
+
+
+function updateNavigation() {
+
+  const numbers =
+    document.querySelectorAll(".number");
+
+
+  numbers.forEach((number, index) => {
+
+    number.classList.remove("active");
+
+    if (index + 1 === currentQuestion) {
+
+      number.classList.add("active");
+
+    }
+
+  });
+
+}
+
+
+function createQuestionNumbers() {
+
+  const box =
+    document.getElementById("numbers");
+
+  box.innerHTML = "";
+
+
+  questions.forEach((q, index) => {
+
+    const number =
+      document.createElement("div");
+
+    number.className = "number";
+
+    number.innerText = index + 1;
+
+
+    number.onclick = function() {
+
+      currentQuestion = index + 1;
+
+      showQuestion();
+
+    };
+
+
+    box.appendChild(number);
+
+  });
+
+}
+
+
+function submitTest() {
+
+  if (questions.length === 0) {
+
+    alert("कोई question उपलब्ध नहीं है।");
+
+    return;
+
+  }
+
+
+  if (
+    !confirm(
+      "क्या आप test submit करना चाहते हैं?"
+    )
+  ) {
+
+    return;
+
+  }
+
+
+  let score = 0;
+  let correct = 0;
+  let wrong = 0;
+  let attempted = 0;
+
+
+  questions.forEach((q, index) => {
+
+    const selected =
+      answers[index + 1];
+
+
+    if (selected !== undefined) {
+
+      attempted++;
+
+
+      if (selected === q.answer) {
+
+        correct++;
+
+        score += Number(q.marks) || 0;
+
+      } else {
+
+        wrong++;
+
+        score -= Number(q.negative) || 0;
+
+      }
+
+    }
+
+  });
+
+
+  const totalMarks =
+    questions.reduce(
+      (total, q) =>
+        total + (Number(q.marks) || 0),
+      0
+    );
+
+
+  const percentage =
+    totalMarks > 0
+      ? ((score / totalMarks) * 100).toFixed(2)
+      : 0;
+
+
+  const studentData =
+    JSON.parse(
+      localStorage.getItem("loggedInStudent")
+    );
+
+
+  if (!studentData) {
+
+    alert("कृपया पहले Student Login करें।");
+
+    window.location.href = "login.html";
+
+    return;
+
+  }
+
+
+  const results =
+    JSON.parse(
+      localStorage.getItem("hoJagarResults")
+    ) || [];
+
+
+  const result = {
+
+    id: Date.now(),
+
+    studentName: studentData.name,
+
+    mobile: studentData.mobile,
+
+    testName: "Online Test",
+
+    score: Number(score.toFixed(2)),
+
+    totalMarks: totalMarks,
+
+    percentage: Number(percentage),
+
+    correct: correct,
+
+    wrong: wrong,
+
+    attempted: attempted,
+
+    rank: null
+
+  };
+
+
+  results.push(result);
+
+
+  localStorage.setItem(
+    "hoJagarResults",
+    JSON.stringify(results)
+  );
+
+
+  alert(
+    "Test submit हो गया।\n\n" +
+    "Score: " + result.score + "\n" +
+    "Correct: " + correct + "\n" +
+    "Wrong: " + wrong + "\n" +
+    "Percentage: " + percentage + "%"
+  );
+
+
+  window.location.href = "manage-results.html";
+
+}
+
+
+function startTimer() {
+
+  const timer =
+    document.getElementById("timer");
+
+
+  const interval =
+    setInterval(function() {
+
+      const minutes =
+        Math.floor(timeLeft / 60);
+
+      const seconds =
+        timeLeft % 60;
+
+
+      timer.innerText =
+        String(minutes).padStart(2, "0") +
+        ":" +
+        String(seconds).padStart(2, "0");
+
+
+      timeLeft--;
+
+
+      if (timeLeft < 0) {
+
+        clearInterval(interval);
+
+        submitTest();
+
+      }
+
+    }, 1000);
+
+}
+
+
+function escapeHtml(text) {
+
+  return String(text)
+
+    .replace(/&/g, "&amp;")
+
+    .replace(/</g, "&lt;")
+
+    .replace(/>/g, "&gt;")
+
+    .replace(/"/g, "&quot;")
+
+    .replace(/'/g, "&#039;");
+
+}
+
+
+loadQuestions();
+
+createQuestionNumbers();
+
+startTimer();
 
     function createQuestionNumbers() {
 
