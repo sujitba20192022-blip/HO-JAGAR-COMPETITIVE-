@@ -1,21 +1,361 @@
-function calculateRanks(results) {
+ <!DOCTYPE html>
+<html lang="hi">
 
-  const sorted = [...results].sort(
-    (a, b) => b.score - a.score
-  );
+<head>
 
-  let lastScore = null;
-  let currentRank = 0;
+<meta charset="UTF-8">
 
-  sorted.forEach((result, index) => {
+<meta name="viewport"
+content="width=device-width, initial-scale=1.0">
 
-    if (result.score !== lastScore) {
-      currentRank = index + 1;
-      lastScore = result.score;
-    }
+<title>Manage Results - HO JAGAR COMPETITIVE</title>
 
-    result.rank = currentRank;
-  });
+<style>
 
-  return sorted;
+*{
+box-sizing:border-box;
+margin:0;
+padding:0;
+font-family:Arial,sans-serif;
 }
+
+body{
+background:#f4f7f5;
+color:#17221c;
+}
+
+.header{
+background:linear-gradient(135deg,#087443,#0b9b58);
+color:white;
+padding:20px;
+text-align:center;
+}
+
+.container{
+max-width:1000px;
+margin:auto;
+padding:20px;
+}
+
+.top{
+display:flex;
+justify-content:space-between;
+align-items:center;
+gap:10px;
+margin-bottom:18px;
+}
+
+.count{
+background:#087443;
+color:white;
+padding:10px 14px;
+border-radius:10px;
+font-weight:bold;
+}
+
+.result-card{
+background:white;
+padding:20px;
+margin-bottom:15px;
+border-radius:16px;
+box-shadow:0 4px 15px rgba(0,0,0,.07);
+}
+
+.result-card h3{
+color:#087443;
+margin-bottom:12px;
+}
+
+.result-card p{
+margin:7px 0;
+color:#555;
+}
+
+.delete{
+margin-top:15px;
+border:none;
+padding:11px 16px;
+border-radius:9px;
+background:#e63946;
+color:white;
+font-weight:bold;
+cursor:pointer;
+}
+
+.empty{
+background:white;
+padding:30px;
+text-align:center;
+border-radius:16px;
+color:#777;
+}
+
+</style>
+
+</head>
+
+
+<body>
+
+
+<header class="header">
+
+<h1>HO JAGAR COMPETITIVE</h1>
+
+<p>Result Management</p>
+
+</header>
+
+
+<main class="container">
+
+
+<div class="top">
+
+<h2>📊 Student Results</h2>
+
+<div class="count" id="count">
+0 Results
+</div>
+
+</div>
+
+
+<div id="resultList"></div>
+
+
+</main>
+
+
+<script>
+
+
+function calculateRanks(results){
+
+const sorted=[...results].sort(
+(a,b)=>b.score-a.score
+);
+
+let lastScore=null;
+
+let rank=0;
+
+
+sorted.forEach((result,index)=>{
+
+if(result.score!==lastScore){
+
+rank=index+1;
+
+lastScore=result.score;
+
+}
+
+result.rank=rank;
+
+});
+
+
+return sorted;
+
+}
+
+
+
+function loadResults(){
+
+
+const results=
+
+JSON.parse(
+localStorage.getItem("hoJagarResults")
+)||[];
+
+
+
+const rankedResults=
+calculateRanks(results);
+
+
+
+localStorage.setItem(
+"hoJagarResults",
+JSON.stringify(rankedResults)
+);
+
+
+
+const list=
+document.getElementById("resultList");
+
+
+const count=
+document.getElementById("count");
+
+
+
+count.innerText=
+rankedResults.length+" Results";
+
+
+list.innerHTML="";
+
+
+
+if(rankedResults.length===0){
+
+list.innerHTML=`
+
+<div class="empty">
+
+<h3>
+अभी कोई Result उपलब्ध नहीं है।
+</h3>
+
+<p>
+Student के test complete करने के बाद
+result यहाँ दिखाई देगा।
+</p>
+
+</div>
+
+`;
+
+return;
+
+}
+
+
+
+rankedResults.forEach((result,index)=>{
+
+
+const card=
+document.createElement("div");
+
+
+card.className="result-card";
+
+
+card.innerHTML=`
+
+<h3>
+🏆 ${escapeHtml(result.testName)}
+</h3>
+
+<p>
+👨‍🎓 Student:
+${escapeHtml(result.studentName)}
+</p>
+
+<p>
+📱 Mobile:
+${escapeHtml(result.mobile)}
+</p>
+
+<p>
+🏆 Rank:
+${result.rank}
+</p>
+
+<p>
+📝 Score:
+${result.score} / ${result.totalMarks}
+</p>
+
+<p>
+📊 Percentage:
+${result.percentage}%
+</p>
+
+<p>
+✅ Correct:
+${result.correct}
+</p>
+
+<p>
+❌ Wrong:
+${result.wrong}
+</p>
+
+<button
+class="delete"
+onclick="deleteResult(${index})">
+
+Delete Result
+
+</button>
+
+`;
+
+
+list.appendChild(card);
+
+
+});
+
+}
+
+
+
+function deleteResult(index){
+
+
+const results=
+
+JSON.parse(
+localStorage.getItem("hoJagarResults")
+)||[];
+
+
+
+if(confirm(
+"क्या आप यह Result delete करना चाहते हैं?"
+)){
+
+
+results.splice(index,1);
+
+
+localStorage.setItem(
+"hoJagarResults",
+JSON.stringify(results)
+);
+
+
+loadResults();
+
+
+}
+
+}
+
+
+
+function escapeHtml(text){
+
+return String(text)
+
+.replace(/&/g,"&amp;")
+
+.replace(/</g,"&lt;")
+
+.replace(/>/g,"&gt;")
+
+.replace(/"/g,"&quot;")
+
+.replace(/'/g,"&#039;");
+
+}
+
+
+
+loadResults();
+
+
+</script>
+
+
+</body>
+
+</html>
