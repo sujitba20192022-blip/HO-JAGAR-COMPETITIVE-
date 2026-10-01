@@ -166,32 +166,8 @@
   <div class="stat"><strong>0</strong>Completed</div>
   <div class="stat"><strong>0</strong>Score</div>
   <div class="stat"><strong>--</strong>Rank</div>
-</section>
-
-<h2 class="section-title">📚 Available Tests</h2>
-
-<section class="tests">
-
-  <div class="test">
-    <h3>Jharkhand GK Test</h3>
-    <p>📝 Questions: 100</p>
-    <p>⏱️ Duration: 60 Minutes</p>
-    <p>💰 Free Test</p>
-    <button onclick="startTest('Jharkhand GK Test')">
-      Start Test
-    </button>
-  </div>
-
-  <div class="test">
-    <h3>HO Competitive Test</h3>
-    <p>📝 Questions: 100</p>
-    <p>⏱️ Duration: 60 Minutes</p>
-    <p>💰 Paid Test</p>
-    <button class="paid" onclick="buyTest('HO Competitive Test')">
-      Buy Test
-    </button>
-  </div>
-
+<section class="tests" id="testsContainer">
+  <p>Tests loading...</p>
 </section>
 
 <h2 class="section-title">📊 My Activity</h2>
@@ -217,18 +193,57 @@
 
 <script>
 
+function loadPublishedTests() {
+  const tests = JSON.parse(localStorage.getItem("hoJagarTests")) || [];
+  const container = document.getElementById("testsContainer");
+
+  const publishedTests = tests.filter(test => test.status === "Published");
+
+  if (publishedTests.length === 0) {
+    container.innerHTML = `
+      <p style="background:white;padding:20px;border-radius:15px;">
+        अभी कोई Published Test उपलब्ध नहीं है।
+      </p>
+    `;
+    return;
+  }
+
+  container.innerHTML = "";
+
+  publishedTests.forEach(test => {
+    const card = document.createElement("div");
+    card.className = "test";
+
+    card.innerHTML = `
+      <h3>${test.name}</h3>
+      <p>📝 Questions: ${test.totalQuestions}</p>
+      <p>⏱️ Duration: ${test.duration} Minutes</p>
+      <p>💰 ${test.type === "Paid" ? "Paid Test" : "Free Test"}</p>
+
+      <button
+        class="${test.type === "Paid" ? "paid" : ""}"
+        onclick="startTest('${test.name}')">
+        ${test.type === "Paid" ? "Buy Test" : "Start Test"}
+      </button>
+    `;
+
+    container.appendChild(card);
+  });
+}
+
 function startTest(testName) {
-  alert(testName + " शुरू हो रहा है।");
+  localStorage.setItem("selectedTestName", testName);
+  window.location.href = "test.html";
 }
 
 function buyTest(testName) {
-  alert(testName + " के लिए payment page खुलेगा।");
-}
+  alert("Payment system जल्द ही connect किया जाएगा।");
+  }
 
 function openPage(page) {
   alert(page + " section जल्द ही connect किया जाएगा।");
 }
-
+loadPublishedTests();
 </script>
 
 </body>
