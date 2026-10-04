@@ -276,22 +276,12 @@ window.addEventListener("beforeinstallprompt", function(event) {
     installButton.style.display = "none";
   };
 });
-    function showStudentLogin() {
-      document.getElementById("studentLogin").style.display = "block";
-      document.getElementById("adminLogin").style.display = "none";
-    }
-
     function showAdminLogin() {
-      document.getElementById("adminLogin").style.display = "block";
-      document.getElementById("studentLogin").style.display = "none";
-    }
-
-    function studentLogin() {
-      alert("Student login system will be connected with database.");
+  window.location.href = "admin-login.html";
     }
 
     function adminLogin() {
-      alert("Admin login system will be connected with secure backend.");
+  window.location.href = "admin-login.html";
     }
 
   </script>
