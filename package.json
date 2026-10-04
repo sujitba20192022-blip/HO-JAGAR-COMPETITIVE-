@@ -6,8 +6,8 @@
     "build": "echo Web app ready"
   },
   "dependencies": {
-    "@capacitor/core": "^9.0.0",
-    "@capacitor/android": "^9.0.0",
-    "@capacitor/cli": "^9.0.0"
+    "@capacitor/android": "^8.5.2"
+    "@capacitor/android": "^8.5.2"
+    "@capacitor/android": "^8.5.2"
   }
 }
