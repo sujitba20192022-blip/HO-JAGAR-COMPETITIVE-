@@ -5,9 +5,7 @@
   "scripts": {
     "build": "echo Web app ready"
   },
-  "dependencies": {
-    "@capacitor/android": "^8.5.2"
-    "@capacitor/android": "^8.5.2"
-    "@capacitor/android": "^8.5.2"
-  }
+"dependencies": {
+  "@capacitor/android": "^8.5.2"
+}
 }
