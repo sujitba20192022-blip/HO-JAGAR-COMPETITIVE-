@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Admin Login - HO JAGAR COMPETITIVE</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: Arial, sans-serif;
+    }
+
+    body {
+      min-height: 100vh;
+      background: #f4f7f5;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #17221c;
+    }
+
+    .login-box {
+      width: 92%;
+      max-width: 420px;
+      background: white;
+      padding: 30px;
+      border-radius: 20px;
+      box-shadow: 0 5px 25px rgba(0,0,0,.10);
+    }
+
+    .logo {
+      text-align: center;
+      font-size: 45px;
+      margin-bottom: 10px;
+    }
+
+    h1 {
+      text-align: center;
+      color: #087443;
+      font-size: 24px;
+      margin-bottom: 5px;
+    }
+
+    .subtitle {
+      text-align: center;
+      color: #666;
+      margin-bottom: 25px;
+    }
+
+    label {
+      display: block;
+      font-weight: bold;
+      margin-top: 15px;
+      margin-bottom: 7px;
+    }
+
+    input {
+      width: 100%;
+      padding: 14px;
+      border: 1px solid #ddd;
+      border-radius: 10px;
+      font-size: 16px;
+      outline: none;
+    }
+
+    input:focus {
+      border-color: #087443;
+    }
+
+    button {
+      width: 100%;
+      padding: 14px;
+      margin-top: 22px;
+      border: none;
+      border-radius: 10px;
+      background: #087443;
+      color: white;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .back {
+      background: #555;
+      margin-top: 10px;
+    }
+
+    .message {
+      display: none;
+      margin-top: 15px;
+      padding: 12px;
+      border-radius: 10px;
+      text-align: center;
+      background: #ffe8e8;
+      color: #c1121f;
+    }
+
+    .security {
+      text-align: center;
+      color: #777;
+      font-size: 13px;
+      margin-top: 18px;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="login-box">
+
+    <div class="logo">🔐</div>
+
+    <h1>HO JAGAR COMPETITIVE</h1>
+
+    <p class="subtitle">Admin Login</p>
+
+    <label>Username</label>
+
+    <input
+      id="username"
+      type="text"
+      placeholder="Admin username"
+      autocomplete="username"
+    >
+
+    <label>Password</label>
+
+    <input
+      id="password"
+      type="password"
+      placeholder="Admin password"
+      autocomplete="current-password"
+    >
+
+    <button onclick="adminLogin()">
+      Login as Admin
+    </button>
+
+    <button
+      class="back"
+      onclick="window.location.href='index.html'">
+      Back to Home
+    </button>
+
+    <div id="message" class="message"></div>
+
+    <div class="security">
+      🔒 Admin access
+    </div>
+
+  </div>
+
+<script>
+
+function adminLogin() {
+
+  const username =
+    document.getElementById("username").value.trim();
+
+  const password =
+    document.getElementById("password").value;
+
+  if (!username || !password) {
+
+    showMessage(
+      "Username और Password डालें।"
+    );
+
+    return;
+  }
+
+  // Admin credentials
+  if (
+    username === "SujitBodra99" &&
+    password === "Sujit@99"
+  ) {
+
+    localStorage.setItem(
+      "adminLoggedIn",
+      "true"
+    );
+
+    window.location.href =
+      "admin-dashboard.html";
+
+  } else {
+
+    showMessage(
+      "Username या Password गलत है।"
+    );
+  }
+}
+
+function showMessage(text) {
+
+  const message =
+    document.getElementById("message");
+
+  message.innerText = text;
+  message.style.display = "block";
+}
+
+</script>
+
+</body>
+</html>
