@@ -3,7 +3,7 @@ import type { CapacitorConfig } from '@capacitor/cli';
 const config: CapacitorConfig = {
   appId: 'com.hojagar.competitive',
   appName: 'HO JAGAR COMPETITIVE',
-  webDir: '.',
+  webDir: 'www',
   bundledWebRuntime: false
 };
 
